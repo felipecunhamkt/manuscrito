@@ -1,0 +1,34 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/vsl/layout,_N_T_/vsl/page,_N_T_/vsl"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/vsl/__PAGE__"
+  ],
+  "prefetchHints": {
+    "hints": 64,
+    "slots": {
+      "children": {
+        "hints": 96,
+        "slots": {
+          "children": {
+            "hints": 160,
+            "slots": null
+          }
+        }
+      }
+    }
+  },
+  "routeCache": {
+    "key": "/route-cache/APP_PAGE/18a2be81c5237d95e32c3a2aeeceb884bcd97822b612c03c864ce7a30bc21d74/$/vsl",
+    "owner": {
+      "kind": "APP_PAGE",
+      "sourceRoute": "/vsl/page"
+    },
+    "isFallback": false
+  }
+}
