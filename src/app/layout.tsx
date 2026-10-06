@@ -13,6 +13,16 @@ export const metadata: Metadata = {
   description:
     'Actor que interpreta a Jesús en la serie The Chosen revela la oración oculta por 2 mil años para atraer prosperidad y salud.',
   robots: 'noindex, nofollow',
+  icons: {
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/icon.jpg', type: 'image/jpeg' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: [
+      { url: '/icon.jpg', type: 'image/jpeg' },
+    ],
+  },
 };
 
 export const viewport: Viewport = {
