@@ -8,15 +8,57 @@ declare global {
 }
 
 /**
+ * Inicializa o snippet base do Meta Pixel no navegador
+ */
+export const initPixel = () => {
+  if (typeof window === 'undefined') return;
+
+  if (!window.fbq) {
+    (function (f: any, b: any, e: any, v: any, n?: any, t?: any, s?: any) {
+      if (f.fbq) return;
+      n = f.fbq = function () {
+        n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+      };
+      if (!f._fbq) f._fbq = n;
+      n.push = n;
+      n.loaded = !0;
+      n.version = '2.0';
+      n.queue = [];
+      t = b.createElement(e);
+      t.async = !0;
+      t.src = v;
+      s = b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t, s);
+    })(
+      window,
+      document,
+      'script',
+      'https://connect.facebook.net/en_US/fbevents.js'
+    );
+
+    try {
+      (window as any).fbq?.('init', FB_PIXEL_ID);
+    } catch (err) {
+      console.warn('[Pixel] Init error:', err);
+    }
+  }
+};
+
+/**
  * Dispara evento padrão do Facebook Pixel com segurança
  */
 export const trackFbq = (event: string, params?: Record<string, unknown>) => {
-  if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
+  if (typeof window !== 'undefined') {
+    if (!window.fbq) {
+      initPixel();
+    }
     try {
-      if (params) {
-        window.fbq('track', event, params);
-      } else {
-        window.fbq('track', event);
+      if (typeof window.fbq === 'function') {
+        if (params) {
+          window.fbq('track', event, params);
+        } else {
+          window.fbq('track', event);
+        }
       }
     } catch (err) {
       console.warn(`[Pixel] Error tracking ${event}:`, err);
