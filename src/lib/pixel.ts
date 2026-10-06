@@ -1,4 +1,5 @@
 export const FB_PIXEL_ID = '2861555854215270';
+export const FB_PIXEL_ID_2 = process.env.NEXT_PUBLIC_FB_PIXEL_ID_2 || '';
 
 declare global {
   interface Window {
@@ -38,6 +39,9 @@ export const initPixel = () => {
 
     try {
       (window as any).fbq?.('init', FB_PIXEL_ID);
+      if (FB_PIXEL_ID_2) {
+        (window as any).fbq?.('init', FB_PIXEL_ID_2);
+      }
     } catch (err) {
       console.warn('[Pixel] Init error:', err);
     }

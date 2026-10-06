@@ -126,8 +126,15 @@ export default function QuizFunnelPage() {
   // Step 9: Frequency Bridge -> Direto para VSL (Etapa 10)
   const handleContinueFrequency = () => {
     trackLead(); // Meta Pixel: fbq('track', 'Lead')
-    setStep('vsl');
-    scrollToTop();
+    if (typeof window !== 'undefined') {
+      const search = window.location.search || '';
+      setTimeout(() => {
+        window.location.href = `/vsl${search}`;
+      }, 120);
+    } else {
+      setStep('vsl');
+      scrollToTop();
+    }
   };
 
   // Restart Funnel

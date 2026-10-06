@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { Play, RotateCcw, Volume2, VolumeX, ShieldCheck, Lock, ArrowRight } from 'lucide-react';
 import {
+  trackPageView,
   trackViewContent,
   trackInitiateCheckout,
   buildCheckoutUrl,
@@ -108,7 +109,8 @@ export const Step10VSL: React.FC<Step10VSLProps> = ({ checkoutUrl }) => {
     captureIncomingParams();
     setFinalCheckoutUrl(buildCheckoutUrl(baseHotmartUrl));
 
-    // Disparar 'ViewContent' na tela da VSL
+    // Disparar eventos na tela da VSL
+    trackPageView();
     trackViewContent('VSL Manuscrito de los Milagros');
 
     // Check localStorage for previously unlocked checkout
