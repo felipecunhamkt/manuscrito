@@ -2,10 +2,16 @@ import { Metadata } from 'next';
 import { Step10VSL } from '@/components/Step10VSL';
 
 export const metadata: Metadata = {
-  title: 'Transmisión Exclusiva - Oración Oculta The Chosen',
+  title: 'Portal Oficial - Transmisión y Presentación Documental',
   description:
-    'Actor que interpreta a Jesús en The Chosen revela la oración oculta por 2 mil años para atraer prosperidad y salud.',
+    'Consulta y presentación explicativa de registros y documentos históricos digitalizados.',
   robots: 'noindex, nofollow',
+  openGraph: {
+    title: 'Portal Oficial - Transmisión y Presentación Documental',
+    description:
+      'Consulta y presentación explicativa de registros y documentos históricos digitalizados.',
+    url: 'https://el-portal-oficial.online/vsl',
+  },
 };
 
 export default function VSLPage() {

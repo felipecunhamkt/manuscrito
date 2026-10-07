@@ -1,23 +1,38 @@
 'use client';
 
-import { useEffect, Suspense } from 'react';
+import { useEffect, useRef, Suspense } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import Script from 'next/script';
-import { FB_PIXEL_ID, FB_PIXEL_ID_2, initPixel, trackPageView, captureIncomingParams } from '@/lib/pixel';
+import {
+  FB_PIXEL_ID,
+  FB_PIXEL_ID_2,
+  OFFICIAL_DOMAIN,
+  initPixel,
+  trackPageView,
+  captureIncomingParams,
+  getCleanEventSourceUrl,
+} from '@/lib/pixel';
 
 function PixelEvents() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const isFirstRender = useRef(true);
 
   useEffect(() => {
-    // 1. Capturar parâmetros de tráfego (UTMs, etc.)
+    // 1. Capturar parâmetros de tráfego e sanitizar barra de endereço
     captureIncomingParams();
 
-    // 2. Inicializar Pixel dinamicamente no DOM
+    // 2. Inicializar Pixel dinamicamente no DOM com autoConfig desativado
     initPixel();
 
     // 3. Disparar PageView
-    trackPageView();
+    // No primeiro carregamento, o Script inline já cuida do PageView inicial;
+    // Em transições subsequentes de rota, dispara com o pathname atualizado.
+    if (!isFirstRender.current) {
+      trackPageView(pathname);
+    } else {
+      isFirstRender.current = false;
+    }
   }, [pathname, searchParams]);
 
   return null;
@@ -30,7 +45,7 @@ export default function MetaPixel() {
         <PixelEvents />
       </Suspense>
 
-      {/* Script tag oficial para carregamento padrão do Next.js */}
+      {/* Script oficial do Meta Pixel com autoConfig desativado e event_source_url limpo */}
       <Script
         id="meta-pixel-init"
         strategy="afterInteractive"
@@ -44,9 +59,17 @@ export default function MetaPixel() {
             t.src=v;s=b.getElementsByTagName(e)[0];
             s.parentNode.insertBefore(t,s)}(window, document,'script',
             'https://connect.facebook.net/en_US/fbevents.js');
+
+            fbq('set', 'autoConfig', false, '${FB_PIXEL_ID}');
             fbq('init', '${FB_PIXEL_ID}');
-            ${FB_PIXEL_ID_2 ? `fbq('init', '${FB_PIXEL_ID_2}');` : ''}
-            fbq('track', 'PageView');
+            ${
+              FB_PIXEL_ID_2
+                ? `fbq('set', 'autoConfig', false, '${FB_PIXEL_ID_2}'); fbq('init', '${FB_PIXEL_ID_2}');`
+                : ''
+            }
+            fbq('track', 'PageView', {
+              event_source_url: '${OFFICIAL_DOMAIN}/'
+            });
           `,
         }}
       />
@@ -55,7 +78,7 @@ export default function MetaPixel() {
           height="1"
           width="1"
           style={{ display: 'none' }}
-          src={`https://www.facebook.com/tr?id=${FB_PIXEL_ID}&ev=PageView&noscript=1`}
+          src={`https://www.facebook.com/tr?id=${FB_PIXEL_ID}&ev=PageView&noscript=1&ed[event_source_url]=${encodeURIComponent(OFFICIAL_DOMAIN + '/')}`}
           alt=""
         />
         {FB_PIXEL_ID_2 && (
@@ -63,7 +86,7 @@ export default function MetaPixel() {
             height="1"
             width="1"
             style={{ display: 'none' }}
-            src={`https://www.facebook.com/tr?id=${FB_PIXEL_ID_2}&ev=PageView&noscript=1`}
+            src={`https://www.facebook.com/tr?id=${FB_PIXEL_ID_2}&ev=PageView&noscript=1&ed[event_source_url]=${encodeURIComponent(OFFICIAL_DOMAIN + '/')}`}
             alt=""
           />
         )}

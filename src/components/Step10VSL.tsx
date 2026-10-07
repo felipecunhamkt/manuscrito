@@ -111,7 +111,7 @@ export const Step10VSL: React.FC<Step10VSLProps> = ({ checkoutUrl }) => {
 
     // Disparar eventos na tela da VSL
     trackPageView();
-    trackViewContent('VSL Manuscrito de los Milagros');
+    trackViewContent('Presentacion Oficial');
 
     // Check localStorage for previously unlocked checkout
     try {

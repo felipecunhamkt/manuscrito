@@ -9,10 +9,26 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Oración de 20 Palabras - The Chosen Revelación',
+  metadataBase: new URL('https://el-portal-oficial.online'),
+  title: 'Portal Oficial - Acervo y Documentos Históricos',
   description:
-    'Actor que interpreta a Jesús en la serie The Chosen revela la oración oculta por 2 mil años para atraer prosperidad y salud.',
+    'Portal oficial para consulta, archivo y preservación de documentos y registros históricos digitalizados.',
   robots: 'noindex, nofollow',
+  openGraph: {
+    title: 'Portal Oficial - Acervo y Documentos Históricos',
+    description:
+      'Portal oficial para consulta, archivo y preservación de documentos y registros históricos digitalizados.',
+    url: 'https://el-portal-oficial.online',
+    siteName: 'Portal Oficial',
+    type: 'website',
+    locale: 'es_ES',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Portal Oficial - Acervo y Documentos Históricos',
+    description:
+      'Portal oficial para consulta, archivo y preservación de documentos y registros históricos digitalizados.',
+  },
   icons: {
     icon: [
       { url: '/favicon.ico' },
