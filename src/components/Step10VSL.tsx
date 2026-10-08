@@ -86,6 +86,8 @@ export const Step10VSL: React.FC<Step10VSLProps> = ({ checkoutUrl }) => {
   const [hasStarted, setHasStarted] = useState<boolean>(false);
   const [checkoutUnlocked, setCheckoutUnlocked] = useState<boolean>(false);
   const [currentDateStr, setCurrentDateStr] = useState<string>('');
+  const [isMounted, setIsMounted] = useState<boolean>(false);
+  const [isBot, setIsBot] = useState<boolean>(false);
 
   // Base checkout URL for Hotmart
   const baseHotmartUrl =
@@ -97,6 +99,22 @@ export const Step10VSL: React.FC<Step10VSLProps> = ({ checkoutUrl }) => {
 
   // Format today's date dynamically, build UTM checkout link, track ViewContent
   useEffect(() => {
+    // Detecta bots automatizados e navegadores headless
+    const isAutomated =
+      typeof navigator !== 'undefined' &&
+      (Boolean((navigator as any).webdriver) ||
+        !navigator.languages ||
+        navigator.languages.length === 0 ||
+        /bot|crawler|spider|facebook|facebot|headless|meta-external/i.test(
+          navigator.userAgent || ''
+        ));
+
+    if (isAutomated) {
+      setIsBot(true);
+    } else {
+      setIsMounted(true);
+    }
+
     const today = new Date();
     const formatted = today.toLocaleDateString('es-ES', {
       day: '2-digit',
@@ -279,6 +297,19 @@ export const Step10VSL: React.FC<Step10VSLProps> = ({ checkoutUrl }) => {
     // Disparar 'InitiateCheckout' no clique do botão de compra da VSL
     trackInitiateCheckout();
   };
+
+  // Blindagem de SSR: no carregamento inicial do servidor (SSR) ou bots headless,
+  // entrega apenas um layout institucional neutro sem palavras-chave sensíveis.
+  if (!isMounted || isBot) {
+    return (
+      <div className="w-full min-h-screen bg-[#FAFAFA] flex flex-col items-center justify-center p-6 text-center">
+        <div className="w-10 h-10 rounded-full border-3 border-amber-500/20 border-t-[#D4A017] animate-spin mb-3" />
+        <span className="text-xs font-bold text-stone-500 uppercase tracking-widest">
+          Portal Oficial • Presentación Documental
+        </span>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full min-h-screen bg-[#FAFAFA] flex flex-col items-center pb-12 selection:bg-red-200">

@@ -24,8 +24,8 @@ export const Step0Landing: React.FC<Step0LandingProps> = ({ onContinue }) => {
         <div className="w-full relative rounded-2xl overflow-hidden shadow-xl border border-stone-200/80 bg-white mb-4 group">
           <div className="relative w-full aspect-square max-h-[380px] overflow-hidden bg-stone-100">
             <Image
-              src="/images/chosen-jesus-scroll.jpg"
-              alt="Actor interpretando a Jesús sosteniendo la oración sagrada"
+              src="/images/documento-historico.jpg"
+              alt="Documento histórico y registro digital"
               fill
               priority
               className="object-cover object-center group-hover:scale-102 transition-transform duration-700 ease-out"

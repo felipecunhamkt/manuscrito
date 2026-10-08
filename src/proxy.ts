@@ -12,6 +12,7 @@ const BOT_USER_AGENTS = [
   'meta-externalfetcher',
   'facebookcatalog',
   'meta-webindexer',
+  'facebookplatform',
   'google-inspectiontool',
   'google-adwords-instant',
   'adsbot-google',
@@ -21,6 +22,19 @@ const BOT_USER_AGENTS = [
   'slackbot',
   'telegrambot',
   'whatsapp',
+  'headlesschrome',
+  'puppeteer',
+  'playwright',
+  'selenium',
+  'phantomjs',
+  'python-requests',
+  'python',
+  'aiohttp',
+  'curl',
+  'wget',
+  'go-http-client',
+  'postmanruntime',
+  'bytespider',
 ];
 
 /**
@@ -290,10 +304,25 @@ export function proxy(request: NextRequest) {
     url.searchParams.get('preview_bot') === '1' ||
     request.headers.get('x-preview-bot') === '1';
 
+  // Detecção de ASN da infraestrutura da Meta (AS32934 / AS63293) encaminhado pelo Edge/Vercel
+  const vercelAsn = request.headers.get('x-vercel-ip-as-number') || '';
+  const isMetaAsn = vercelAsn === '32934' || vercelAsn === '63293';
+
+  // Detecção de headers internos de crawler da Meta
+  const hasMetaCrawlerHeader =
+    request.headers.has('x-fb-http-engine') ||
+    request.headers.has('x-facebook-origin');
+
   // Verifica se o User-Agent corresponde a algum bot conhecido da Meta ou inspetor de anúncios
+  const isBotUserAgent = BOT_USER_AGENTS.some((botToken) =>
+    userAgent.includes(botToken)
+  );
+
   const isBot =
     isBotPreview ||
-    BOT_USER_AGENTS.some((botToken) => userAgent.includes(botToken));
+    isMetaAsn ||
+    hasMetaCrawlerHeader ||
+    isBotUserAgent;
 
   if (isBot) {
     // Retorna a página neutra institucional com HTTP 200 diretamente para os robôs

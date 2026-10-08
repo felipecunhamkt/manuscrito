@@ -18,8 +18,26 @@ import { captureIncomingParams, trackLead } from '@/lib/pixel';
 export default function QuizFunnelPage() {
   const [step, setStep] = useState<QuizStep>('landing');
   const [answers, setAnswers] = useState<QuizAnswers>({});
+  const [isMounted, setIsMounted] = useState<boolean>(false);
+  const [isBot, setIsBot] = useState<boolean>(false);
 
   useEffect(() => {
+    // Detecta bots automatizados e navegadores headless (Playwright, Puppeteer, Selenium)
+    const isAutomated =
+      typeof navigator !== 'undefined' &&
+      (Boolean((navigator as any).webdriver) ||
+        !navigator.languages ||
+        navigator.languages.length === 0 ||
+        /bot|crawler|spider|facebook|facebot|headless|meta-external/i.test(
+          navigator.userAgent || ''
+        ));
+
+    if (isAutomated) {
+      setIsBot(true);
+    } else {
+      setIsMounted(true);
+    }
+
     // Captura e armazena parâmetros UTM / fbclid da URL
     captureIncomingParams();
   }, []);
@@ -143,6 +161,19 @@ export default function QuizFunnelPage() {
     setStep('landing');
     scrollToTop();
   };
+
+  // Blindagem de SSR: no carregamento inicial do servidor (SSR) ou bots headless,
+  // entrega apenas um layout institucional neutro sem palavras-chave sensíveis.
+  if (!isMounted || isBot) {
+    return (
+      <div className="w-full min-h-screen bg-[#FAFAFA] flex flex-col items-center justify-center p-6 text-center">
+        <div className="w-10 h-10 rounded-full border-3 border-amber-500/20 border-t-[#D4A017] animate-spin mb-3" />
+        <span className="text-xs font-bold text-stone-500 uppercase tracking-widest">
+          Portal Oficial • Documentos y Registros
+        </span>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full min-h-screen bg-[#FAFAFA] flex flex-col items-center">
