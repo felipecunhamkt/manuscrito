@@ -1,4 +1,4 @@
-export const FB_PIXEL_ID = '2861555854215270';
+export const FB_PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID || '29097881223163934';
 export const FB_PIXEL_ID_2 = process.env.NEXT_PUBLIC_FB_PIXEL_ID_2 || '';
 export const OFFICIAL_DOMAIN = 'https://el-portal-oficial.online';
 
